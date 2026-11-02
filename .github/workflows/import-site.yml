@@ -1,0 +1,39 @@
+name: Import website source
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/import-site.yml']
+permissions:
+  contents: write
+jobs:
+  import:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - name: Import verified website files
+        run: |
+          python3 - <<'PYTHON'
+          from pathlib import Path
+          import hashlib, json, urllib.request
+          base = "https://maayan-rabinovich.vercel.app/"
+          expected = {'a-hug.html': 'd78cc22f509c8861b1a505a970bf781b666b67f7ed7c1c6745006757152b2c25', 'being-a-home.html': 'f53ecb61c96f0540474f51e89c727bd41d8e35a1b5bba62b9396587130e22886', 'being-heard.html': 'a0bd9e42545ca677364a64c85512a4e2930c2c0c53419267da9e78d3d0a43ca2', 'beyond-the-phone.html': '551ecc136ff1d53f5edc5d6126964930b33279c934dd228e7306793241363b9b', 'blog-preview.html': 'ae8544b16bcc63cbf9b4af9a1c925eae5f2d8e43ca198a97d86f336b551834f4', 'blog.css': '0cdd9d72b3394114c3acbe7d8daaa1784a3d4bcd94a22ab1eea6434c9985c6fe', 'blog.html': '2bd9bd0c461541608e23394ebb937b3c6e16e0f497a6eede047dbac5123c804d', 'cinnamon.html': 'c1207c0351c4574e474c1ccc06dc1f3a156883fbc63b666b66572c37e9805349', 'compass.html': '50e128f6222c3e52577173e66c899a0098c6fcb790fc1712265cd49b8a70b1af', 'different-noises.html': '62ed1e875e62ee912970de5090375f89f024be462af9da531e10210cfbc21d76', 'everyday-courage.html': '9ba0cf17efc9050033fb966943293d51a3cd4583d6986a43a398bee1ee40b928', 'finding-flowers.html': '2378477d196e7b15f7b25eada6deb2675e1d7bc1a052512582146b631648bc43', 'grandfather.html': '303f0825e1cc1645e8d752a5dd049217534f89873eb1232052e44d3b258eab7d', 'hosting-both-ways.html': 'a05aa06d8083ff0171c9e02b7b54d4708e5d458c8d5dbaa84c6cb463e26e2f2c', 'index.html': '78dd8b83367a7c009d50afacbaf1ecbb6b5156f350529353a0bc93757d8819b0', 'little-engine.html': 'a7d2dd6567cb583d1e863105a9642274a8c2077a49d5168892547cefec60a306', 'long-distance.html': 'bcd2175ded0a2ad6a4798cfa82a9243434e83c10bac7cbe2e46ce6aeaf05d656', 'maayan-480.webp': 'b0ff3419ab4e85b7d421f3cee8a4e38ca31282efad88ec73af033006e3a06498', 'maayan-960.webp': 'eaf467d1c316f10c8c421e9652f2dc19e143630ea0750b67b5e60d6094b40280', 'neighbors.html': '72bb511cc5ee50cc9068182c772439333865ec9dc7c19865da0d5684519f99ec', 'not-ashamed.html': '60a8f328dd6f876b84e7d4da90bff6bc42fb2cf228b483b1445c5a7c47d47437', 'one-starfish.html': '711516c045c146ee62caa52736db2c5e703881ab075762e9fcba64b827c45fac', 'photo-1.jpg': 'd44c5f86463f28d902fc24799db1ad2341e8379cadfcb47be348c480dafc4915', 'photo-2.jpg': 'f9235dad91bc0ce4b14591c6412aef3d14cd93bbaa30a2ec6ca7405882744e59', 'photo-3.jpg': 'fa8360330aa984471fc6b10c4f944fd8d581d4080bc469c4025f7be8a70ad598', 'photo-4.jpg': 'b0e9b56023cb29c313f755dabe5a4ee68152698c0187be099944a5dd7c6883d9', 'photo-hero-sand.png': '419aba3b9626ef2e48051aaa7da98a23df274dca0b09cf3044c5559ef01af561', 'robots.txt': '49e457a3b138984417bf5021911568a0b85a3b13016ebc6c4e88c932680b4a9e', 'site.css': '911b4c5ad80966ca23f4ddcd50ca75f4afa90d99e376aac706db0786c48a292d', 'sitemap.xml': 'efd18dee3854725d0284be94128139dea5829dd16cf33468016680265a02b987', 'small-diamond.html': '7bbe557cc5de0a1f3291f1b145065b6f211931d699417208483c5e7071dcdda4', 'support-and-push.html': '03d232550a079178f6d9fe8f4bc5bb12dca3f12d91c8a1a337b4f89714f74c40', 'twenty-shekels.html': 'c509a9c5bdc2d730c8c08e4ea2e1a8d2bc938d6e1f734ad1230f53a2b9ff455b', 'when-things-change.html': '62d3999944b5d30bae66e8c192bdb03f635dd065289df5049645bd641be38e39'}
+          for name, digest in expected.items():
+              with urllib.request.urlopen(base + name, timeout=60) as response:
+                  data = response.read()
+              if hashlib.sha256(data).hexdigest() != digest:
+                  raise RuntimeError("Checksum mismatch: " + name)
+              Path(name).write_bytes(data)
+          Path("vercel.json").write_text('{"framework":null,"cleanUrls":false,"trailingSlash":false}\n')
+          Path(".nojekyll").write_text("\n")
+          print("Imported and verified", len(expected), "website files")
+          PYTHON
+      - name: Save website source
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add --all
+          if ! git diff --cached --quiet; then
+            git commit -m 'Import complete website source and assets'
+            git push
+          fi
