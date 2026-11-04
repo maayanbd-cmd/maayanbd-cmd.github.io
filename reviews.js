@@ -7,7 +7,7 @@
   const english = document.documentElement.lang === 'en';
   const rtl = getComputedStyle(track).direction === 'rtl';
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  let index = 0, elapsed = 0, stopped = reduced.matches, hovered = false, focused = false, visible = false;
+  let index = 0, elapsed = 0, stopped = true, hovered = false, focused = false, visible = false;
   const step = () => cards[0].getBoundingClientRect().width + parseFloat(getComputedStyle(track).gap);
   const max = () => Math.max(0, cards.length - Math.round(track.clientWidth / step()));
   function update(smooth = true) {
@@ -26,7 +26,7 @@
   pause.addEventListener('click', () => { stopped = !stopped; state(); });
   root.addEventListener('mouseenter', () => hovered = true);
   root.addEventListener('mouseleave', () => hovered = false);
-  root.addEventListener('focusin', () => focused = true);
+  root.addEventListener('focusin', () => { focused = true; stopped = true; state(); });
   root.addEventListener('focusout', e => focused = root.contains(e.relatedTarget));
   track.addEventListener('scroll', () => { index = Math.round(Math.abs(track.scrollLeft) / step()); root.querySelector('.reviews-count').textContent = `${index + 1} / ${max() + 1}`; }, {passive:true});
   new IntersectionObserver(([entry]) => visible = entry.isIntersecting, {threshold:0.3}).observe(root);
@@ -39,5 +39,16 @@
     elapsed += 1000;
     if (elapsed >= Math.max(7500, words * 350 + 2000)) move(1);
   }, 1000);
+  track.addEventListener('keydown', event => {
+    if (event.target !== track) return;
+    const nextKey = rtl ? 'ArrowLeft' : 'ArrowRight';
+    const prevKey = rtl ? 'ArrowRight' : 'ArrowLeft';
+    if (![nextKey, prevKey, 'Home', 'End'].includes(event.key)) return;
+    event.preventDefault();
+    stopped = true; state();
+    if (event.key === 'Home') { index = 0; update(); }
+    else if (event.key === 'End') { index = max(); update(); }
+    else move(event.key === nextKey ? 1 : -1);
+  });
   state(); update(false);
 })();
