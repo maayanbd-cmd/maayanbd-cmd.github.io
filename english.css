@@ -1,0 +1,26 @@
+/* English uses the same palette and components, with left-to-right typography. */
+html[lang=en] body{font-family:'Heebo',Arial,sans-serif;line-height:1.7}
+html[lang=en] h1,html[lang=en] h2,html[lang=en] h3,html[lang=en] .logo{font-family:Georgia,'Times New Roman',serif}
+html[lang=en] header .wrap{max-width:1200px}
+html[lang=en] header nav{gap:13px;font-size:13px}
+html[lang=en] .logo{font-size:28px}
+html[lang=en] .logo .sub{font-size:11px;max-width:190px}
+html[lang=en] .hero-text h1{font-size:46px;letter-spacing:-1px}
+html[lang=en] .hero-text .lede{font-size:16px;line-height:1.75}
+html[lang=en] .opening-quote blockquote{font-family:Georgia,'Times New Roman',serif;font-size:25px;line-height:1.55}
+html[lang=en] .service-card h3{font-size:25px}
+html[lang=en] .service-card p{line-height:1.6}
+html[lang=en] .consulting-points>div{padding-inline-start:18px;padding-inline-end:0}
+html[lang=en] .faq-item summary{padding:18px 34px 18px 0}
+html[lang=en] .faq-item summary:after{left:auto;right:0}
+html[lang=en] .lecture-card h3{font-size:22px}
+html[lang=en] .lecture-card .kicker{font-size:11px}
+html[lang=en] .lecture-description{line-height:1.6}
+html[lang=en] .about-text{text-align:left}
+html[lang=en] .about-text p{font-size:16px;line-height:1.75}
+html[lang=en] .belonging p{line-height:1.65;font-size:19px}
+html[lang=en] .lecture-detail .cta-row,html[lang=en] .mastermind .cta-row{text-align:start}
+@media(min-width:761px){html[lang=en] .lecture-topics{grid-template-columns:repeat(2,minmax(0,1fr))}html[lang=en] .lecture-card>summary{min-height:85px}html[lang=en] .lecture-detail,html[lang=en] .mastermind{min-height:0}}
+@media(max-width:760px){html[lang=en] .logo{font-size:25px}html[lang=en] .logo .sub{display:none}html[lang=en] .hero-text h1{font-size:37px;line-height:1.2}html[lang=en] .opening-quote blockquote{font-size:21px}html[lang=en] .hero-text .lede{font-size:16px}html[lang=en] header nav{font-size:15px}html[lang=en] .contact-paths .pill{width:100%}}
+/* Consistent bold weight for every English heading. */
+html[lang=en] h1,html[lang=en] h2,html[lang=en] h3,html[lang=en] h4,html[lang=en] h5,html[lang=en] h6,html[lang=en] .logo,html[lang=en] .big-tagline{font-weight:700}
