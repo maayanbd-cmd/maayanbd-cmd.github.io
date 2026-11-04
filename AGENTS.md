@@ -2,6 +2,7 @@
 
 This repository is the editable source of Maayan Rabinovich's website.
 
+- User terminology: when Maayan says "באתר החי", she means https://www.maayanrabinovich.co.il/ and the code in this GitHub repository, published through Vercel. Apply requested edits here and publish them unless she asks for a preview without publishing.
 - Production: https://www.maayanrabinovich.co.il/
 - Hosting: Vercel, team maayan-4df2, project express-draco-cqxnpb8.
 - Production branch: main. Vercel deploys changes pushed to main.
